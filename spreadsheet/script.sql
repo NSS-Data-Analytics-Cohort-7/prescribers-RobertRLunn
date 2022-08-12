@@ -20,24 +20,43 @@
 -- LIMIT 10;
 
 -- 2. a. Which specialty had the most total number of claims (totaled over all drugs)?
---- WORKING ON THIS ONE
-SELECT specialty_description, total_claim_count
-FROM prescriber
-WHERE total_claim_count IS NOT NULL
-LEFT JOIN prescription
-ON prescription.npi = prescriber.npi
-GROUP BY specialty_description, total_claim_count
-ORDER BY total_claim_count ASC
-LIMIT 10;
+
+-- SELECT specialty_description, SUM(total_claim_count) AS total_claims
+-- FROM prescriber
+-- LEFT JOIN prescription
+-- ON prescription.npi = prescriber.npi
+-- WHERE total_claim_count IS NOT NULL
+-- GROUP BY specialty_description
+-- ORDER BY total_claims DESC
+-- LIMIT 10;
 
 
 --     b. Which specialty had the most total number of claims for opioids?
 
+-- SELECT specialty_description, SUM(total_claim_count) AS total_claims
+-- FROM prescriber AS p1
+-- LEFT JOIN prescription AS p2
+-- ON p2.npi = p1.npi
+-- LEFT JOIN drug AS d
+-- ON p2.drug_name = d.drug_name
+-- WHERE total_claim_count IS NOT NULL
+-- AND opioid_drug_flag = 'Y'
+-- OR long_acting_opioid_drug_flag = 'Y'
+-- GROUP BY specialty_description
+-- ORDER BY total_claims DESC
+-- LIMIT 10;
+
 --     c. **Challenge Question:** Are there any specialties that appear in the prescriber table that have no associated prescriptions in the prescription table?
+
+
 
 --     d. **Difficult Bonus:** *Do not attempt until you have solved all other problems!* For each specialty, report the percentage of total claims by that specialty which are for opioids. Which specialties have a high percentage of opioids?
 
 -- 3. a. Which drug (generic_name) had the highest total drug cost?
+
+--- SUBQUERY???
+---SELECT generic_name, total_drug_cost
+
 
 --     b. Which drug (generic_name) has the hightest total cost per day? **Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.
 
