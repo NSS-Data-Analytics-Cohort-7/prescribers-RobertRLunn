@@ -123,16 +123,50 @@
 
 --     c. What is the largest (in terms of population) county which is not included in a CBSA? Report the county name and population.
 
+-- SELECT f.county, p.population
+-- FROM fips_county AS f
+-- LEFT JOIN cbsa AS c
+-- ON c.fipscounty = f.fipscounty
+-- LEFT JOIN population AS p
+-- ON p.fipscounty = c.fipscounty
+-- WHERE county NOT IN (c.cbsa)
+-- AND p.population IS NOT NULL
+-- AND c.cbsaname LIKE '%TN%'
+-- GROUP by f.county, p.population
+-- ORDER BY p.population DESC;
+
+-- ^^^ different output from the others, not sure if this is right
 
 
 -- 6. 
 --     a. Find all rows in the prescription table where total_claims is at least 3000. Report the drug_name and the total_claim_count.
 
+SELECT drug_name, total_claim_count
+FROM prescription
+WHERE total_claim_count > 3000;
+
+
 --     b. For each instance that you found in part a, add a column that indicates whether the drug is an opioid.
+
+SELECT p.drug_name, total_claim_count, d.opioid_drug_flag
+FROM prescription AS p
+LEFT JOIN drug AS d
+ON p.drug_name = d.drug_name
+WHERE total_claim_count > 3000;
 
 --     c. Add another column to you answer from the previous part which gives the prescriber first and last name associated with each row.
 
+SELECT p.drug_name, total_claim_count, d.opioid_drug_flag, p2.nppes_provider_last_org_name, p2.nppes_provider_first_name
+FROM prescription AS p
+LEFT JOIN drug AS d
+ON p.drug_name = d.drug_name
+LEFT JOIN prescriber AS p2
+ON p2.npi = p.npi
+WHERE total_claim_count > 3000;
+
 -- 7. The goal of this exercise is to generate a full list of all pain management specialists in Nashville and the number of claims they had for each opioid. **Hint:** The results from all 3 parts will have 637 rows.
+
+
 
 --     a. First, create a list of all npi/drug_name combinations for pain management specialists (specialty_description = 'Pain Management') in the city of Nashville (nppes_provider_city = 'NASHVILLE'), where the drug is an opioid (opiod_drug_flag = 'Y'). **Warning:** Double-check your query before running it. You will only need to use the prescriber and drug tables since you don't need the claims numbers yet.
 
