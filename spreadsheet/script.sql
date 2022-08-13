@@ -47,22 +47,57 @@
 -- LIMIT 10;
 
 --     c. **Challenge Question:** Are there any specialties that appear in the prescriber table that have no associated prescriptions in the prescription table?
-
-
-
 --     d. **Difficult Bonus:** *Do not attempt until you have solved all other problems!* For each specialty, report the percentage of total claims by that specialty which are for opioids. Which specialties have a high percentage of opioids?
 
 -- 3. a. Which drug (generic_name) had the highest total drug cost?
 
---- SUBQUERY???
----SELECT generic_name, total_drug_cost
+-- SELECT d.generic_name, p.total_drug_cost
+-- FROM prescription AS p
+-- LEFT JOIN drug AS d
+-- ON p.drug_name = d.drug_name
+-- GROUP BY d.generic_name, p.total_drug_cost
+-- ORDER BY p.total_drug_cost DESC
+-- LIMIT 10;
 
 
 --     b. Which drug (generic_name) has the hightest total cost per day? **Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.
 
+-- SELECT d.generic_name, ROUND(p.total_drug_cost/NULLIF(p.total_day_supply, 0), 2) AS daily_cost
+-- FROM drug AS d
+-- LEFT JOIN prescription AS p
+-- ON p.drug_name = d.drug_name
+-- WHERE ROUND(p.total_drug_cost/NULLIF(p.total_day_supply, 0))>0
+-- GROUP BY d.generic_name, p.total_drug_cost, daily_cost, p.total_day_supply
+-- ORDER BY daily_cost DESC;
+-- *borrowed Christian's NULLIF, try again with IS NOT NULL later*
+
+
 -- 4. a. For each drug in the drug table, return the drug name and then a column named 'drug_type' which says 'opioid' for drugs which have opioid_drug_flag = 'Y', says 'antibiotic' for those drugs which have antibiotic_drug_flag = 'Y', and says 'neither' for all other drugs.
 
+-- SELECT d.drug_name, d.opioid_drug_flag, d.antibiotic_drug_flag,
+-- CASE
+-- WHEN d.opioid_drug_flag = 'Y' THEN 'opioid'
+-- WHEN d.antibiotic_drug_flag = 'Y' THEN 'antibiotic'
+-- ELSE 'neither'
+-- END AS drug_type
+-- FROM drug AS d;
+
 --     b. Building off of the query you wrote for part a, determine whether more was spent (total_drug_cost) on opioids or on antibiotics. Hint: Format the total costs as MONEY for easier comparision.
+
+-- SELECT SUM(total_drug_cost) AS money, s.drug_type
+-- FROM
+-- (SELECT drug.drug_name,
+-- CASE
+-- WHEN drug.opioid_drug_flag = 'Y' THEN 'opioid'
+-- WHEN drug.antibiotic_drug_flag = 'Y' THEN 'antibiotic'
+-- ELSE 'neither'
+-- END AS drug_type
+-- FROM drug) AS s
+-- LEFT JOIN prescription AS p 
+-- ON s.drug_name = p.drug_name
+-- WHERE drug_type IS NOT NULL
+-- GROUP BY drug_type
+-- ORDER BY money;
 
 -- 5. a. How many CBSAs are in Tennessee? **Warning:** The cbsa table contains information for all states, not just Tennessee.
 
