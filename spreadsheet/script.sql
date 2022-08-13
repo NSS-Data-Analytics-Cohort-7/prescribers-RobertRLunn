@@ -101,9 +101,29 @@
 
 -- 5. a. How many CBSAs are in Tennessee? **Warning:** The cbsa table contains information for all states, not just Tennessee.
 
+-- SELECT DISTINCT(cbsa)
+-- FROM cbsa
+-- WHERE cbsaname LIKE '%TN%';
+
+--DISTINCT? ^^^
+
 --     b. Which cbsa has the largest combined population? Which has the smallest? Report the CBSA name and total population.
 
+-- SELECT c.cbsaname, SUM(p.population) AS total_pop
+-- FROM cbsa AS c
+-- LEFT JOIN population AS p
+-- ON p.fipscounty = c.fipscounty
+-- GROUP BY c.cbsaname
+-- HAVING c.cbsaname LIKE '%TN%'
+-- ORDER BY total_pop DESC;
+
+--ORDER BY total_pop ASC;
+-- ^ for small population
+
+
 --     c. What is the largest (in terms of population) county which is not included in a CBSA? Report the county name and population.
+
+
 
 -- 6. 
 --     a. Find all rows in the prescription table where total_claims is at least 3000. Report the drug_name and the total_claim_count.
